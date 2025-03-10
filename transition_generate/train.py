@@ -19,12 +19,20 @@ import loss
 
 def train_context_tf(num_epoch=2000, batch_size=16, num_workers=4, num_head=8, 
                      num_block=6, hidden_dim=512, tf_out_dim=512, lr=1e-4,
-                     datasets_dir="./HDI4D"):
+                     datasets_dir="../HDI4D"):
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    datasets_path = os.listdir(datasets_dir)[1:5]
-    datasets_path.append(os.listdir(datasets_dir)[6])
+    datasets_path = []
+
+    # sift operatable datasets
+    for dir in os.listdir(datasets_dir):
+
+        if os.path.exists(os.path.join(datasets_dir, dir, "object_anno")):
+
+            if not dir == "1730707321.1998334_bag_pengyang_hand1_hook2":
+
+                datasets_path.append(dir)
 
     train_datasets = []
     test_datasets = []
@@ -33,7 +41,7 @@ def train_context_tf(num_epoch=2000, batch_size=16, num_workers=4, num_head=8,
 
     for dataset_path in datasets_path:
 
-        full_datsset = HDI4DDataset(data_dir=dataset_path)
+        full_datsset = HDI4DDataset(data_dir=os.path.join(datasets_dir, dataset_path))
 
         train_size = int(len(full_datsset) * 0.8)
         test_size = len(full_datsset) - train_size
