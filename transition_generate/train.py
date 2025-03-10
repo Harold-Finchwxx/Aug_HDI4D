@@ -13,6 +13,7 @@ from data import HDI4DDataset
 import context_transformer
 from context_transformer import ContextTransformer
 import torch.optim as optim
+import loss
 
 
 
@@ -68,10 +69,57 @@ def train_context_tf(num_epoch=2000, batch_size=16, num_workers=4, num_head=8,
     
     optimizer = optim.Adam(train_model.parameters(), lr=lr)
 
-    for epoch in tqdm(range(num_epoch), desc="Training"):
+    process_bar = tqdm(range(num_epoch), leave=True)
+
+    for epoch in process_bar:
+
+        process_bar.set_description(f"epoch [{epoch+1}/{num_epoch}]")
+
+        for dataloder in train_loaders:
+
+            for feature_cat, mask in dataloder:
+                
+                # forward pass
+                object_marker, left_keypoints, right_keypoints = train_model.forward(input=feature_cat, mask=mask)
+
+                # compute loss
+                L2_3d_object = loss.L2_position_loss(predict=object_marker, mask=mask)
+                L2_3d_left = loss.L2_position_loss(predict=left_keypoints, mask=right_keypoints)
+                L2_3d_right = loss.L2_position_loss(predict=right_keypoints, mask=mask)
+
+                L2_3d = L2_3d_object + L2_3d_left + L2_3d_right
+
+                L2_smooth_object = loss.L2_smooth_loss(predict=object_marker, mask=mask)
+                L2_smooth_left = loss.L2_smooth_loss(predict=left_keypoints, mask=mask)
+                L2_smooth_right = loss.L2_smooth_loss(predict=right_keypoints, mask=mask)
+
+                L2_smooth = L2_smooth_object + L2_smooth_left + L2_smooth_right
+
+                #weight of loss
+                alpha_3d = 0.9
+                beta_smooth = 1 - alpha_3d
+
+                loss_total = (alpha_3d * L2_3d) + (beta_smooth * L2_smooth)
+
+                # backward pass
+                optimizer.zero_grad()
+                loss_total.backward()
+                optimizer.step()
+                
+                #update process bar info
+                process_bar.set_postfix({
+                    "loss":loss_total.item()
+                })
+
+
+                
 
 
 
+
+if __name__ == "__main__":
+
+    train_context_tf()
         
 
 

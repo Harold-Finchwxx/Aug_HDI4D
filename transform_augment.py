@@ -12,6 +12,8 @@ from tqdm import tqdm
 
 # TODO: if the trasformation, especally translation is too large
 # there can be need for interpolating frames between original sequences
+
+# TODO: add transform for marker points and 3D keypoints in HDI4D dataset
  
 def transform_frames(input_folder, output_folder, translation=[0.8, 0.0, 0.0], theta=30.0):
 
