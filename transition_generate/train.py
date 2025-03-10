@@ -19,7 +19,7 @@ import loss
 
 def train_context_tf(num_epoch=2000, batch_size=16, num_workers=4, num_head=8, 
                      num_block=6, hidden_dim=512, tf_out_dim=512, lr=1e-4,
-                     datasets_dir="HDI4D"):
+                     datasets_dir="./HDI4D"):
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
