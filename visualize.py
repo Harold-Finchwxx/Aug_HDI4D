@@ -8,7 +8,7 @@ import glob
 # TODO: encapsulate code below into a function
 # with __name__ module
 # initialize arguments
-input_folder = 'transformed/1730707919.2094975_bag_pengyang_hand2_hook2'
+input_folder = 'HDI4D/transformed/1730707919.2094975_bag_pengyang_hand2_hook2'
 object_path = os.path.join(input_folder, 'object_anno/mesh')
 left_path = os.path.join(input_folder, 'hand_anno_vit/mano/left')
 right_path = os.path.join(input_folder, 'hand_anno_vit/mano/right')

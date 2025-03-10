@@ -140,4 +140,8 @@ if __name__ == "__main__":
     theta = 30.0
     input_folder = '1730707919.2094975_bag_pengyang_hand2_hook2'
     output_folder = os.path.join('transformed', input_folder)
-    transform_frames(input_folder, output_folder, translation=translation, theta=theta)
+
+    input_dir = os.path.join("HDI4D", input_folder)
+    output_dir = os.path.join("HDI4D", output_folder)
+    
+    transform_frames(input_dir, output_dir, translation=translation, theta=theta)
